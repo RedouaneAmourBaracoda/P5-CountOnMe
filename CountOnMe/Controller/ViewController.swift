@@ -10,41 +10,44 @@ import UIKit
 
 
 final class ViewController: UIViewController {
-    
+
     // MARK: - @IBOutlets
 
     @IBOutlet weak var resultTextView: UITextView!
-    
+
     // MARK: - Stored properties
-    
-    var calculatorModel: CalculatorModel?
+
+    var calculatorManager: CalculatorManager?
 
     // MARK: - View Life cycles
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.calculatorModel = CalculatorModel()
-        calculatorModel?.delegate = self
+        self.calculatorManager = CalculatorManager()
+        calculatorManager?.delegate = self
     }
 
     // MARK: - @IBActions
 
     @IBAction func digitButtonTapped(_ sender: UIButton) {
         guard let digit = sender.titleLabel?.text else { return }
-        calculatorModel?.add(digit: digit)
+        calculatorManager?.add(digit: digit)
     }
 
     @IBAction func clearButtonTapped(_ sender: UIButton) {
-        calculatorModel?.clear()
+        calculatorManager?.clear()
     }
-    
+
     @IBAction func operatorButtonTapped(_ sender: UIButton) {
         guard let operation = sender.titleLabel?.text else { return }
-        calculatorModel?.add(operation: operation)
+        calculatorManager?.add(operation: operation)
     }
 }
 
-extension ViewController: CalculatorModelDelegate {
+
+// MARK: - Extension CalculatorManagerDelegate
+
+extension ViewController: CalculatorManagerDelegate {
     func showError(_ error: CalculationError) {
         let alert: UIAlertController = .init(title: "Unvalid operation", message: error.message, preferredStyle: .alert)
         let action: UIAlertAction = .init(title: "ok", style: .default) { _ in
