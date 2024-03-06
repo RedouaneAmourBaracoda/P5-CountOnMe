@@ -22,8 +22,10 @@ struct CalculatorModel {
             delegate?.display(stringResult)
         }
     }
-
-    private var leftOperand: String?
+    
+    private var leftOperand: String = ""
+    private var rightOperand: String = ""
+    private var currentOperator: MathOperation?
 
     // MARK: - Computed properties
     private var canAddOperation: Bool {
@@ -56,14 +58,11 @@ struct CalculatorModel {
     }
     
     private mutating func getMathResult() {
-        var substring = "+" + stringResult
+        var substring = stringResult
         substring.removeAll { $0 == " " }
         
-        var leftOperand: String = ""
-        var rightOperand: String = ""
-        var currentOperator: MathOperation?
         for character in substring {
-            if (character != "+") && (character != "=") {
+            if (character != "+") && (character != "=") && (character != "-") {
                 if currentOperator == nil {
                     leftOperand.append(character)
                 } else {
@@ -71,18 +70,38 @@ struct CalculatorModel {
                 }
             } else {
                 if rightOperand.isEmpty {
-                    currentOperator = .addition
+                    if (character == "+") {
+                        currentOperator = .addition
+                    } else {
+                        currentOperator = .substraction
+                    }
                 } else {
-                    leftOperand = addition(leftOperand: leftOperand, rightOperand: rightOperand)
+                    switch currentOperator {
+                    case .addition:
+                        leftOperand = add(leftOperand: leftOperand, rightOperand: rightOperand)
+                    case .substraction:
+                        leftOperand = substract(leftOperand: leftOperand, rightOperand: rightOperand)
+                    case nil:
+                        break
+                    }
                     rightOperand.removeAll()
+                    if (character == "+") {
+                        currentOperator = .addition
+                    } else {
+                        currentOperator = .substraction
+                    }
                 }
             }
         }
         stringResult = leftOperand
     }
     
-    private func addition(leftOperand: String, rightOperand: String) -> String {
+    private func add(leftOperand: String, rightOperand: String) -> String {
         String((Int(leftOperand) ?? 0) + (Int(rightOperand) ?? 0))
+    }
+
+    private func substract(leftOperand: String, rightOperand: String) -> String {
+        String((Int(leftOperand) ?? 0) - (Int(rightOperand) ?? 0))
     }
 
     mutating func clear() {
@@ -92,6 +111,7 @@ struct CalculatorModel {
 
 enum MathOperation {
     case addition
+    case substraction
 }
 
 enum CurrentOperand {
