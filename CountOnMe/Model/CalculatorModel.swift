@@ -10,59 +10,74 @@ import Foundation
 
 protocol CalculatorModelDelegate {
     func display(_ result: String)
-    func showError(_ error: Error)
+    func showError(_ error: CalculationError)
 }
 
 struct CalculatorModel {
-    
+
     // MARK: - Stored properties
     var delegate: CalculatorModelDelegate?
-    private var operation: String = ""
     private var stringResult: String = "" {
         didSet {
             delegate?.display(stringResult)
         }
     }
 
+    private var leftOperand: String?
+
     // MARK: - Computed properties
     private var canAddOperation: Bool {
         stringResult != "" && stringResult.last != " "
     }
-    
+
     // MARK: - Methods
     mutating func addDigit(digit: String){
+        guard !(digit == "0" && stringResult.hasSuffix("/ ")) else { delegate?.showError(CalculationError.divideByZero)
+            return
+        }
         stringResult += digit
     }
 
     mutating func addOperation(operation: String) {
-        if canAddOperation {
-            if operation == "=" {
-                stringResult += " " + operation + " "
-                let finalResult: Double = calculateResult(stringResult)
-            } else {
-                stringResult += " " + operation + " "
-            }
-        } else {
+        guard canAddOperation else {
             delegate?.showError(CalculationError.unvalidOperator)
+            return
         }
+        stringResult += " " + operation + " "
+    }
+
+    mutating func makeCalculation() {
+        guard canAddOperation else {
+            delegate?.showError(CalculationError.unvalidOperator)
+            return
+        }
+        stringResult += " " + "=" + " "
     }
 
     mutating func clear() {
         stringResult = ""
     }
-    
-    private func calculateResult(_ stringResult: String) -> Double {
-        let table = stringResult
-            .map { $0 }
-            .filter({ $0 != " "})
+}
 
-        for element in table {
-            print(element)
-        }
-        return 0
-    }
+enum MathOperation {
+    case addition
+}
+
+enum CurrentOperand {
+    case left
+    case right
 }
 
 enum CalculationError: Error {
     case unvalidOperator
+    case divideByZero
+    
+    var message: String {
+        switch self {
+        case .unvalidOperator:
+            "unvalid operator"
+        case .divideByZero:
+            "division by 0"
+        }
+    }
 }

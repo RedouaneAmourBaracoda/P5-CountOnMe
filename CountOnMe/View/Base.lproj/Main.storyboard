@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="eqK-jh-KKu">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="eqK-jh-KKu">
     <device id="retina6_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -181,7 +181,7 @@
                                                             <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         </state>
                                                         <connections>
-                                                            <action selector="operatorButtonTapped:" destination="eqK-jh-KKu" eventType="touchUpInside" id="pTP-av-tKY"/>
+                                                            <action selector="equalTapped:" destination="eqK-jh-KKu" eventType="touchUpInside" id="gv8-Jh-aIi"/>
                                                         </connections>
                                                     </button>
                                                 </subviews>
@@ -267,7 +267,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" tag="-4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qMj-Of-bCU">
-                                                <rect key="frame" x="288" y="0.0" width="86" height="75.333333333333343"/>
+                                                <rect key="frame" x="288" y="0.0" width="86" height="75.333333333333329"/>
                                                 <color key="backgroundColor" red="0.76007986068725586" green="0.78088480234146118" blue="0.24112558364868164" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                                 <state key="normal" title="/">
@@ -298,8 +298,8 @@
                                     <mask key="constraints">
                                         <include reference="CNv-SB-y1y"/>
                                         <exclude reference="Cmq-nB-R5J"/>
-                                        <exclude reference="FzJ-uU-OF6"/>
                                         <include reference="dqA-b1-g0C"/>
+                                        <exclude reference="FzJ-uU-OF6"/>
                                     </mask>
                                 </variation>
                             </stackView>

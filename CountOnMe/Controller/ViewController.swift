@@ -38,6 +38,11 @@ final class ViewController: UIViewController {
         calculatorModel?.clear()
     }
 
+    
+    @IBAction func equalTapped(_ sender: UIButton) {
+        calculatorModel?.makeCalculation()
+    }
+    
     @IBAction func operatorButtonTapped(_ sender: UIButton) {
         guard let operation = sender.titleLabel?.text else { return }
         calculatorModel?.addOperation(operation: operation)
@@ -45,8 +50,8 @@ final class ViewController: UIViewController {
 }
 
 extension ViewController: CalculatorModelDelegate {
-    func showError(_ error: Error) {
-        let alert: UIAlertController = .init(title: "\("Unvalid operation")", message: "error.localizedDescription", preferredStyle: .alert)
+    func showError(_ error: CalculationError) {
+        let alert: UIAlertController = .init(title: "Unvalid operation", message: error.message, preferredStyle: .alert)
         let action: UIAlertAction = .init(title: "ok", style: .default) { _ in
             self.dismiss(animated: true)
         }
