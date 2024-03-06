@@ -52,6 +52,24 @@ struct CalculatorModel {
             return
         }
         stringResult += " " + "=" + " "
+        getMathResult()
+    }
+    
+    private mutating func getMathResult() {
+        var substring = stringResult
+        substring.removeAll { $0 == " " }
+        
+        var temporaryResult: Int = 0
+        var rightOperand: String = ""
+        for character in substring {
+            if character != "+" && character != "=" {
+                rightOperand.append(character)
+            } else {
+                temporaryResult += Int(rightOperand) ?? 0
+                rightOperand.removeAll()
+            }
+        }
+        stringResult += " " + String(temporaryResult)
     }
 
     mutating func clear() {
