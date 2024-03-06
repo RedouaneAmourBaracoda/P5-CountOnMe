@@ -22,7 +22,7 @@ struct CalculatorModel {
             delegate?.display(stringResult)
         }
     }
-    
+
     private var leftOperand: String = ""
     private var rightOperand: String = ""
     private var currentOperator: MathOperation?
@@ -63,11 +63,7 @@ struct CalculatorModel {
         
         for character in substring {
             if (character != "+") && (character != "=") && (character != "-") {
-                if currentOperator == nil {
-                    leftOperand.append(character)
-                } else {
-                    rightOperand.append(character)
-                }
+                fillOperands(with: character)
             } else {
                 if rightOperand.isEmpty {
                     if (character == "+") {
@@ -87,13 +83,24 @@ struct CalculatorModel {
                     rightOperand.removeAll()
                     if (character == "+") {
                         currentOperator = .addition
-                    } else {
+                    } else if (character == "-"){
                         currentOperator = .substraction
+                    } else {
+                        currentOperator = nil
                     }
                 }
             }
         }
         stringResult = leftOperand
+        leftOperand.removeAll()
+    }
+    
+    private mutating func fillOperands(with character: String.Element){
+        if currentOperator == nil {
+            leftOperand.append(character)
+        } else {
+            rightOperand.append(character)
+        }
     }
     
     private func add(leftOperand: String, rightOperand: String) -> String {
@@ -106,6 +113,9 @@ struct CalculatorModel {
 
     mutating func clear() {
         stringResult = ""
+        currentOperator = nil
+        leftOperand.removeAll()
+        rightOperand.removeAll()
     }
 }
 
@@ -130,5 +140,11 @@ enum CalculationError: Error {
         case .divideByZero:
             "division by 0"
         }
+    }
+}
+
+private extension String.Element {
+    var isAnOperator: Bool {
+        (self == "+") || (self == "-") || (self == "*") || (self == "/") || (self == "=")
     }
 }
