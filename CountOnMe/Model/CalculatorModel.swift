@@ -27,72 +27,63 @@ struct CalculatorModel {
     private var rightOperand: String = ""
     private var currentOperator: MathOperation?
 
-    // MARK: - Computed properties
-    private var canAddOperation: Bool {
-        stringResult != "" && stringResult.last != " "
-    }
-
     // MARK: - Methods
-    mutating func addDigit(digit: String){
+    mutating func add(digit: String){
         guard !(digit == "0" && stringResult.hasSuffix("/ ")) else { delegate?.showError(CalculationError.divideByZero)
             return
         }
         stringResult += digit
     }
 
-    mutating func addOperation(operation: String) {
-        guard canAddOperation else {
+    mutating func add(operation: String) {
+        guard stringResult != "" && stringResult.last != " " else {
             delegate?.showError(CalculationError.unvalidOperator)
             return
         }
         stringResult += " " + operation + " "
+        if operation == "=" {
+            getResult()
+        }
     }
 
-    mutating func makeCalculation() {
-        guard canAddOperation else {
-            delegate?.showError(CalculationError.unvalidOperator)
-            return
-        }
-        stringResult += " " + "=" + " "
-        getMathResult()
-    }
-    
-    private mutating func getMathResult() {
+    private mutating func getResult() {
         var substring = stringResult
         substring.removeAll { $0 == " " }
         
         for character in substring {
-            if (character != "+") && (character != "=") && (character != "-") {
-                fillOperands(with: character)
-            } else {
-                if rightOperand.isEmpty {
-                    if (character == "+") {
-                        currentOperator = .addition
-                    } else {
-                        currentOperator = .substraction
-                    }
-                } else {
-                    switch currentOperator {
-                    case .addition:
-                        leftOperand = add(leftOperand: leftOperand, rightOperand: rightOperand)
-                    case .substraction:
-                        leftOperand = substract(leftOperand: leftOperand, rightOperand: rightOperand)
-                    case nil:
-                        break
-                    }
-                    rightOperand.removeAll()
-                    if (character == "+") {
-                        currentOperator = .addition
-                    } else if (character == "-"){
-                        currentOperator = .substraction
-                    } else {
-                        currentOperator = nil
-                    }
-                }
-            }
+            character.isAnOperator ? fillOperator(with: character) : fillOperands(with: character)
         }
         stringResult = leftOperand
+        clearOperandsAndOperators()
+    }
+
+    private mutating func fillOperator(with character: String.Element) {
+        calculateFormerOperation()
+        fillNewOperator(with: character)
+    }
+    
+    private mutating func calculateFormerOperation(){
+        guard let currentOperator else { return }
+        switch currentOperator {
+        case .addition:
+            leftOperand = add(leftOperand: leftOperand, rightOperand: rightOperand)
+        case .substraction:
+            leftOperand = substract(leftOperand: leftOperand, rightOperand: rightOperand)
+        }
+        rightOperand.removeAll()
+    }
+
+    private mutating func fillNewOperator(with character: String.Element) {
+        if (character == "+") {
+            currentOperator = .addition
+        } else if (character == "-"){
+            currentOperator = .substraction
+        }
+    }
+    
+    private mutating func clearOperandsAndOperators() {
         leftOperand.removeAll()
+        currentOperator = nil
     }
     
     private mutating func fillOperands(with character: String.Element){

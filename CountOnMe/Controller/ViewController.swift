@@ -31,21 +31,16 @@ final class ViewController: UIViewController {
 
     @IBAction func digitButtonTapped(_ sender: UIButton) {
         guard let digit = sender.titleLabel?.text else { return }
-        calculatorModel?.addDigit(digit: digit)
+        calculatorModel?.add(digit: digit)
     }
 
     @IBAction func clearButtonTapped(_ sender: UIButton) {
         calculatorModel?.clear()
     }
-
-    
-    @IBAction func equalTapped(_ sender: UIButton) {
-        calculatorModel?.makeCalculation()
-    }
     
     @IBAction func operatorButtonTapped(_ sender: UIButton) {
         guard let operation = sender.titleLabel?.text else { return }
-        calculatorModel?.addOperation(operation: operation)
+        calculatorModel?.add(operation: operation)
     }
 }
 
