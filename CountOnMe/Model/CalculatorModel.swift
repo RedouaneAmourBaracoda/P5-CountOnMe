@@ -56,20 +56,33 @@ struct CalculatorModel {
     }
     
     private mutating func getMathResult() {
-        var substring = stringResult
+        var substring = "+" + stringResult
         substring.removeAll { $0 == " " }
         
-        var temporaryResult: Int = 0
+        var leftOperand: String = ""
         var rightOperand: String = ""
+        var currentOperator: MathOperation?
         for character in substring {
-            if character != "+" && character != "=" {
-                rightOperand.append(character)
+            if (character != "+") && (character != "=") {
+                if currentOperator == nil {
+                    leftOperand.append(character)
+                } else {
+                    rightOperand.append(character)
+                }
             } else {
-                temporaryResult += Int(rightOperand) ?? 0
-                rightOperand.removeAll()
+                if rightOperand.isEmpty {
+                    currentOperator = .addition
+                } else {
+                    leftOperand = addition(leftOperand: leftOperand, rightOperand: rightOperand)
+                    rightOperand.removeAll()
+                }
             }
         }
-        stringResult += " " + String(temporaryResult)
+        stringResult = leftOperand
+    }
+    
+    private func addition(leftOperand: String, rightOperand: String) -> String {
+        String((Int(leftOperand) ?? 0) + (Int(rightOperand) ?? 0))
     }
 
     mutating func clear() {
