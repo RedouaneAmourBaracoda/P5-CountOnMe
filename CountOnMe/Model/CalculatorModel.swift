@@ -30,6 +30,7 @@ struct CalculatorModel {
     }
 
     mutating func clear() {
+        prioritizerService.clear()
         clearOperandsAndOperators()
     }
 
