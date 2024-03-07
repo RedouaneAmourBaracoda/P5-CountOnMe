@@ -9,84 +9,66 @@
 import Foundation
 
 struct CalculatorModel {
-    private var leftOperand: String = ""
-    private var rightOperand: String = ""
-    private var currentOperator: MathOperation?
-    private var prioritizerService: PrioritizerService = .init()
-
     mutating func getResult(rawString: String) -> String {
-        var substring = rawString
-        substring.removeAll { $0 == " " }
+        let substring = simplifyString(rawString: rawString)
+        return stringFromSubstring(substring)
+    }
 
-        let prioritizedSubstring = prioritizerService.prioritizeString(rawString: substring)
-
-        for character in prioritizedSubstring {
-            character.isAnOperator ? fillOperator(with: character) : fillOperands(with: character)
+    private mutating func simplifyString(rawString: String) -> [Substring]{
+        var splittedString = separateString(rawString: rawString)
+        guard var lastIndex = splittedString.lastIndex(where: { $0.isAnEqualizer }) else { return [] }
+        var index = 0
+        while index != lastIndex {
+            if splittedString[index].isAMultiplication {
+                appendOperation(splittedString: &splittedString, index: index) { multiply($0, $1) }
+                lastIndex -= 2
+            } else if splittedString[index].isADivision {
+                appendOperation(splittedString: &splittedString, index: index) { divide($0, $1) }
+                lastIndex -= 2
+            } else {
+                index += 1
+            }
         }
-        let finalResult = leftOperand
-        clearOperandsAndOperators()
-        prioritizerService.clear()
-        return finalResult
+        return splittedString
     }
 
-    mutating func clear() {
-        prioritizerService.clear()
-        clearOperandsAndOperators()
+    private func appendOperation(
+        splittedString: inout [Substring],
+        index: Int,
+        operation: (Substring, Substring) -> Substring
+    ) {
+        let leftOperand: Substring = splittedString[index - 1]
+        let rightOperand: Substring = splittedString[index + 1]
+        let result = operation(leftOperand, rightOperand)
+        splittedString[index - 1] = result
+        splittedString.remove(at: index + 1)
+        splittedString.remove(at: index)
     }
 
-    private mutating func fillOperator(with operation: String.Element) {
-        calculateFormerOperation()
-        fillNewOperator(with: operation)
-    }
-
-    private mutating func calculateFormerOperation(){
-        guard let currentOperator else { return }
-        switch currentOperator {
-        case .addition:
-            leftOperand = add(leftOperand: leftOperand, rightOperand: rightOperand)
-        case .substraction:
-            leftOperand = substract(leftOperand: leftOperand, rightOperand: rightOperand)
+    private func stringFromSubstring(_ substring: [Substring]) -> String {
+        var result: String = ""
+        for string in substring {
+            result += string
         }
-        rightOperand.removeAll()
+        return result
     }
 
-    private mutating func fillNewOperator(with character: String.Element) {
-        if (character == "+") {
-            currentOperator = .addition
-        } else if (character == "-"){
-            currentOperator = .substraction
-        }
+    func multiply(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
+        let mathResult = (Int(leftOperand) ?? 0) * (Int(rightOperand) ?? 0)
+        return Substring(String(mathResult))
     }
 
-    private mutating func clearOperandsAndOperators() {
-        leftOperand.removeAll()
-        currentOperator = nil
+    func divide(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
+        let mathResult = (Int(leftOperand) ?? 0) / (Int(rightOperand) ?? 0)
+        return Substring(String(mathResult))
     }
 
-    private mutating func fillOperands(with digit: String.Element){
-        if currentOperator == nil {
-            leftOperand.append(digit)
-        } else {
-            rightOperand.append(digit)
-        }
-    }
-
-    private func add(leftOperand: String, rightOperand: String) -> String {
-        String((Int(leftOperand) ?? 0) + (Int(rightOperand) ?? 0))
-    }
-
-    private func substract(leftOperand: String, rightOperand: String) -> String {
-        String((Int(leftOperand) ?? 0) - (Int(rightOperand) ?? 0))
+    func separateString(rawString: String) -> [Substring] {
+        return rawString.split { $0 == " " }
     }
 }
 
-private enum MathOperation {
-    case addition
-    case substraction
-}
-
-
-extension String.Element {
+extension Substring {
     var isAnOperator: Bool {
         isAnAddition || isASubstraction || isAMultiplication || isADivision || isAnEqualizer
     }

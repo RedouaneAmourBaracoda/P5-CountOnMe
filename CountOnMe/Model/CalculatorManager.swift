@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol CalculatorManagerDelegate {
+protocol CalculatorManagerDelegate: AnyObject {
     func display(_ result: String)
     func showError(_ error: CalculationError)
 }
@@ -16,7 +16,7 @@ protocol CalculatorManagerDelegate {
 struct CalculatorManager {
 
     // MARK: - Stored properties
-    var delegate: CalculatorManagerDelegate?
+    weak var delegate: CalculatorManagerDelegate?
     private var calculatorModel: CalculatorModel = .init()
     private var stringResult: String = "" {
         didSet {
@@ -45,7 +45,6 @@ struct CalculatorManager {
     
     mutating func clear(){
         stringResult = ""
-        calculatorModel.clear()
     }
 }
 
