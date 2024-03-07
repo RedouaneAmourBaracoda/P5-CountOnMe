@@ -25,36 +25,36 @@ public struct PrioritizerService {
     private mutating func fillOperator(with operation: String.Element) {
         if operation.isAMultiplication {
             if isMultiplicationFlagRaised {
-                leftOperand = String((Int(leftOperand) ?? 0) * (Int(rightOperand) ?? 0))
+                leftOperand = String((Double(leftOperand) ?? 0) * (Double(rightOperand) ?? 0))
                 rightOperand.removeAll()
             }
             if isDivisionFlagRaised {
-                leftOperand = String((Int(leftOperand) ?? 0) / (Int(rightOperand) ?? 0))
+                leftOperand = String((Double(leftOperand) ?? 0) / (Double(rightOperand) ?? 0))
                 rightOperand.removeAll()
                 isDivisionFlagRaised = false
             }
             isMultiplicationFlagRaised = true
         } else if operation.isADivision {
             if isDivisionFlagRaised {
-                leftOperand = String((Int(leftOperand) ?? 0) / (Int(rightOperand) ?? 0))
+                leftOperand = String((Double(leftOperand) ?? 0) / (Double(rightOperand) ?? 0))
                 rightOperand.removeAll()
             }
             if isMultiplicationFlagRaised {
-                leftOperand = String((Int(leftOperand) ?? 0) * (Int(rightOperand) ?? 0))
+                leftOperand = String((Double(leftOperand) ?? 0) * (Double(rightOperand) ?? 0))
                 rightOperand.removeAll()
                 isMultiplicationFlagRaised = false
             }
             isDivisionFlagRaised = true
         } else {
             if isMultiplicationFlagRaised {
-                leftOperand = String((Int(leftOperand) ?? 0) * (Int(rightOperand) ?? 0))
+                leftOperand = String((Double(leftOperand) ?? 0) * (Double(rightOperand) ?? 0))
                 resultString.append(leftOperand)
                 resultString.append(operation)
                 leftOperand.removeAll()
                 rightOperand.removeAll()
                 isMultiplicationFlagRaised = false
             } else if isDivisionFlagRaised {
-                leftOperand = String((Int(leftOperand) ?? 0) / (Int(rightOperand) ?? 0))
+                leftOperand = String((Double(leftOperand) ?? 0) / (Double(rightOperand) ?? 0))
                 resultString.append(leftOperand)
                 resultString.append(operation)
                 leftOperand.removeAll()

@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol CalculatorManagerDelegate {
+protocol CalculatorManagerDelegate: AnyObject {
     func display(_ result: String)
     func showError(_ error: CalculationError)
 }
@@ -16,8 +16,11 @@ protocol CalculatorManagerDelegate {
 struct CalculatorManager {
 
     // MARK: - Stored properties
-    var delegate: CalculatorManagerDelegate?
-    private var calculatorModel: CalculatorModel = .init()
+
+    weak var delegate: CalculatorManagerDelegate?
+
+    private var calculatorModel = CalculatorModel()
+
     private var stringResult: String = "" {
         didSet {
             delegate?.display(stringResult)
@@ -25,10 +28,13 @@ struct CalculatorManager {
     }
 
     // MARK: - Methods
-    mutating func insert(digit: String){
-        guard !(digit == "0" && stringResult.hasSuffix("/ ")) else { delegate?.showError(CalculationError.divideByZero)
+
+    mutating func insert(digit: String) {
+        guard !(digit == "0" && stringResult.hasSuffix("/ ")) else { 
+            delegate?.showError(CalculationError.divideByZero)
             return
         }
+
         stringResult += digit
     }
 
@@ -37,14 +43,26 @@ struct CalculatorManager {
             delegate?.showError(CalculationError.unvalidOperator)
             return
         }
+
         stringResult += " " + operation + " "
+        
         if operation == "=" {
-            stringResult = calculatorModel.getResult(rawString: stringResult)
+            // Number formatter
+            let numberFormatter = NumberFormatter()
+            numberFormatter.maximumFractionDigits = 4
+            numberFormatter.locale = Locale.current
+
+            let unformattedResult = calculatorModel.getResult(rawString: stringResult)
+
+            let formattedResult = numberFormatter.string(from: NSDecimalNumber(string: unformattedResult))
+
+            stringResult = formattedResult!
         }
     }
     
-    mutating func clear(){
+    mutating func clear() {
         stringResult = ""
+
         calculatorModel.clear()
     }
 }
