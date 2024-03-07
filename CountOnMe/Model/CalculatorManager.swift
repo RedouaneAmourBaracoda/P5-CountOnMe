@@ -17,23 +17,22 @@ struct CalculatorManager {
 
     // MARK: - Stored properties
     var delegate: CalculatorManagerDelegate?
+    private var calculatorModel: CalculatorModel = .init()
     private var stringResult: String = "" {
         didSet {
             delegate?.display(stringResult)
         }
     }
-    
-    private var calculatorModel: CalculatorModel = .init()
 
     // MARK: - Methods
-    mutating func add(digit: String){
+    mutating func insert(digit: String){
         guard !(digit == "0" && stringResult.hasSuffix("/ ")) else { delegate?.showError(CalculationError.divideByZero)
             return
         }
         stringResult += digit
     }
 
-    mutating func add(operation: String) {
+    mutating func insert(operation: String) {
         guard stringResult != "" && stringResult.last != " " else {
             delegate?.showError(CalculationError.unvalidOperator)
             return

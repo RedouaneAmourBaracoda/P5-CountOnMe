@@ -17,7 +17,7 @@ final class ViewController: UIViewController {
 
     // MARK: - Stored properties
 
-    var calculatorManager: CalculatorManager?
+    private var calculatorManager: CalculatorManager?
 
     // MARK: - View Life cycles
 
@@ -31,7 +31,7 @@ final class ViewController: UIViewController {
 
     @IBAction func digitButtonTapped(_ sender: UIButton) {
         guard let digit = sender.titleLabel?.text else { return }
-        calculatorManager?.add(digit: digit)
+        calculatorManager?.insert(digit: digit)
     }
 
     @IBAction func clearButtonTapped(_ sender: UIButton) {
@@ -40,10 +40,9 @@ final class ViewController: UIViewController {
 
     @IBAction func operatorButtonTapped(_ sender: UIButton) {
         guard let operation = sender.titleLabel?.text else { return }
-        calculatorManager?.add(operation: operation)
+        calculatorManager?.insert(operation: operation)
     }
 }
-
 
 // MARK: - Extension CalculatorManagerDelegate
 

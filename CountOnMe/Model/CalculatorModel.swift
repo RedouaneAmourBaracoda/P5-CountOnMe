@@ -12,16 +12,20 @@ struct CalculatorModel {
     private var leftOperand: String = ""
     private var rightOperand: String = ""
     private var currentOperator: MathOperation?
+    private var prioritizerService: PrioritizerService = .init()
 
     mutating func getResult(rawString: String) -> String {
         var substring = rawString
         substring.removeAll { $0 == " " }
-        
-        for character in substring {
+
+        let prioritizedSubstring = prioritizerService.prioritizeString(rawString: substring)
+
+        for character in prioritizedSubstring {
             character.isAnOperator ? fillOperator(with: character) : fillOperands(with: character)
         }
         let finalResult = leftOperand
         clearOperandsAndOperators()
+        prioritizerService.clear()
         return finalResult
     }
 
@@ -81,8 +85,28 @@ private enum MathOperation {
 }
 
 
-private extension String.Element {
+extension String.Element {
     var isAnOperator: Bool {
-        (self == "+") || (self == "-") || (self == "*") || (self == "/") || (self == "=")
+        isAnAddition || isASubstraction || isAMultiplication || isADivision || isAnEqualizer
+    }
+
+    var isAnAddition: Bool {
+        (self == "+")
+    }
+
+    var isASubstraction: Bool {
+        (self == "-")
+    }
+
+    var isAMultiplication: Bool {
+        (self == "x")
+    }
+
+    var isADivision: Bool {
+        (self == "/")
+    }
+    
+    var isAnEqualizer: Bool {
+        (self == "=")
     }
 }
