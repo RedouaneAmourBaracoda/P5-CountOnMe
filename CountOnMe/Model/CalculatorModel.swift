@@ -9,40 +9,64 @@
 import Foundation
 
 struct CalculatorModel {
+    private var resultString: [Substring] = []
+
     mutating func getResult(rawString: String) -> String {
-        let substring = simplifyString(rawString: rawString)
-        return stringFromSubstring(substring)
+        applyPrioritiesRules(rawString: rawString)
+        calculateFinalResult()
+        return stringFromSubstring(resultString)
+    }
+    
+    mutating func clear() {
+        resultString.removeAll()
+    }
+    
+    private mutating func calculateFinalResult() {
+        reduceString(
+            condition1: { $0.isAnAddition },
+            operation1: add(_:_:),
+            condition2: { $0.isASubstraction },
+            operation2: substract(_:_:)
+        )
+        resultString.removeAll { $0.isAnEqualizer }
+    }
+    
+    private mutating func applyPrioritiesRules(rawString: String){
+        resultString = separateString(rawString: rawString)
+        reduceString(
+            condition1: { $0.isAMultiplication },
+            operation1: multiply(_:_:),
+            condition2: { $0.isADivision },
+            operation2: divide(_:_:)
+        )
     }
 
-    private mutating func simplifyString(rawString: String) -> [Substring]{
-        var splittedString = separateString(rawString: rawString)
-        guard var lastIndex = splittedString.lastIndex(where: { $0.isAnEqualizer }) else { return [] }
+    private mutating func reduceString(
+        condition1: (Substring) -> Bool,
+        operation1: (Substring, Substring) -> Substring,
+        condition2: (Substring) -> Bool,
+        operation2: (Substring, Substring) -> Substring
+    ){
+        guard var lastIndex = resultString.lastIndex(where: { $0.isAnEqualizer }) else { return }
         var index = 0
         while index != lastIndex {
-            if splittedString[index].isAMultiplication {
-                appendOperation(splittedString: &splittedString, index: index) { multiply($0, $1) }
+            if condition1(resultString[index]) {
+                appendOperation(index: index, operation: operation1)
                 lastIndex -= 2
-            } else if splittedString[index].isADivision {
-                appendOperation(splittedString: &splittedString, index: index) { divide($0, $1) }
+            } else if condition2(resultString[index]) {
+                appendOperation(index: index, operation: operation2)
                 lastIndex -= 2
             } else {
                 index += 1
             }
         }
-        return splittedString
     }
 
-    private func appendOperation(
-        splittedString: inout [Substring],
-        index: Int,
-        operation: (Substring, Substring) -> Substring
-    ) {
-        let leftOperand: Substring = splittedString[index - 1]
-        let rightOperand: Substring = splittedString[index + 1]
-        let result = operation(leftOperand, rightOperand)
-        splittedString[index - 1] = result
-        splittedString.remove(at: index + 1)
-        splittedString.remove(at: index)
+    private mutating func appendOperation(index: Int, operation: (Substring, Substring) -> Substring) {
+        let result = operation(resultString[index - 1], resultString[index + 1])
+        resultString[index - 1] = result
+        resultString.remove(at: index + 1)
+        resultString.remove(at: index)
     }
 
     private func stringFromSubstring(_ substring: [Substring]) -> String {
@@ -52,14 +76,24 @@ struct CalculatorModel {
         }
         return result
     }
+    
+    func add(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
+        let mathResult = (Float(leftOperand) ?? 0.0) + (Float(rightOperand) ?? 0.0)
+        return Substring(String(mathResult))
+    }
+    
+    func substract(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
+        let mathResult = (Float(leftOperand) ?? 0.0) - (Float(rightOperand) ?? 0.0)
+        return Substring(String(mathResult))
+    }
 
     func multiply(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
-        let mathResult = (Int(leftOperand) ?? 0) * (Int(rightOperand) ?? 0)
+        let mathResult = (Float(leftOperand) ?? 0.0) * (Float(rightOperand) ?? 0.0)
         return Substring(String(mathResult))
     }
 
     func divide(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
-        let mathResult = (Int(leftOperand) ?? 0) / (Int(rightOperand) ?? 0)
+        let mathResult = (Float(leftOperand) ?? 0.0) / (Float(rightOperand) ?? 0.0)
         return Substring(String(mathResult))
     }
 
@@ -68,7 +102,8 @@ struct CalculatorModel {
     }
 }
 
-extension Substring {
+private extension Substring {
+
     var isAnOperator: Bool {
         isAnAddition || isASubstraction || isAMultiplication || isADivision || isAnEqualizer
     }

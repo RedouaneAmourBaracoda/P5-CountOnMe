@@ -17,7 +17,9 @@ struct CalculatorManager {
 
     // MARK: - Stored properties
     weak var delegate: CalculatorManagerDelegate?
+
     private var calculatorModel: CalculatorModel = .init()
+
     private var stringResult: String = "" {
         didSet {
             delegate?.display(stringResult)
@@ -42,9 +44,10 @@ struct CalculatorManager {
             stringResult = calculatorModel.getResult(rawString: stringResult)
         }
     }
-    
+
     mutating func clear(){
         stringResult = ""
+        calculatorModel.clear()
     }
 }
 

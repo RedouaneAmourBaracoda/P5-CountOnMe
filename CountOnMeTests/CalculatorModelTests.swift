@@ -10,42 +10,62 @@
 import XCTest
 
 final class CalculatorManagerTests: XCTestCase {
-    var calculatorModel: CalculatorModel!
+    private var calculatorModel: CalculatorModel!
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         self.calculatorModel = .init()
     }
 
-
-    func testStringSeparator() throws {
+    private func testStringSeparator() throws {
         let rawString: String = "2 - 1 + 6 x 10 - 4 / 2 = "
         let splitResult = calculatorModel.separateString(rawString: rawString)
         let expectedResult: [Substring] = ["2", "-", "1", "+", "6", "x", "10", "-", "4", "/", "2", "="]
-        
+
         XCTAssertEqual(splitResult, expectedResult)
     }
     
-    func testMultiplyStringOperands() {
+    private func testAddStringOperands() {
+        let leftOperand: Substring = .init("12")
+        let rightOperand: Substring = .init("2")
+        let mathResult = calculatorModel.add(leftOperand, rightOperand)
+        let expectedResult: Substring = .init("14")
+
+        XCTAssertEqual(mathResult, expectedResult)
+    }
+    
+    private func testSubtractStringOperands() {
+        let leftOperand: Substring = .init("12")
+        let rightOperand: Substring = .init("2")
+        let mathResult = calculatorModel.substract(leftOperand, rightOperand)
+        let expectedResult: Substring = .init("10")
+
+        XCTAssertEqual(mathResult, expectedResult)
+    }
+
+    private func testMultiplyStringOperands() {
         let leftOperand: Substring = .init("12")
         let rightOperand: Substring = .init("2")
         let mathResult = calculatorModel.multiply(leftOperand, rightOperand)
         let expectedResult: Substring = .init("24")
+
         XCTAssertEqual(mathResult, expectedResult)
     }
-    
-    func testDivideStringOperands() {
+
+    private func testDivideStringOperands() {
         let leftOperand: Substring = .init("12")
         let rightOperand: Substring = .init("2")
         let mathResult = calculatorModel.divide(leftOperand, rightOperand)
         let expectedResult: Substring = .init("6")
+
         XCTAssertEqual(mathResult, expectedResult)
     }
-    
-    func testSimplifyString() {
+
+    private func testGetResultFromCalculator() {
         let rawString: String = "2 x 3 + 1 - 10 / 5 = "
-        let expectedResult: String = "6+1-2="
+        let expectedResult: String = "5"
         let actualResult = calculatorModel.getResult(rawString: rawString)
+
         XCTAssertEqual(actualResult, expectedResult)
     }
 }
