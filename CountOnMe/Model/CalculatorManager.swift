@@ -16,6 +16,7 @@ protocol CalculatorManagerDelegate: AnyObject {
 struct CalculatorManager {
 
     // MARK: - Stored properties
+
     weak var delegate: CalculatorManagerDelegate?
 
     private var calculatorModel: CalculatorModel = .init()
@@ -27,7 +28,8 @@ struct CalculatorManager {
     }
 
     // MARK: - Methods
-    mutating func insert(digit: String){
+
+    mutating func insert(digit: String) {
         guard !(digit == "0" && stringResult.hasSuffix("/ ")) else { delegate?.showError(CalculationError.divideByZero)
             return
         }
@@ -41,13 +43,26 @@ struct CalculatorManager {
         }
         stringResult += " " + operation + " "
         if operation == "=" {
-            stringResult = calculatorModel.getResult(rawString: stringResult)
+            let unformattedString = calculatorModel.getResult(rawString: stringResult)
+            guard let formattedString = formatString(unformattedString) else { return }
+            stringResult = formattedString
         }
     }
 
-    mutating func clear(){
+    mutating func clear() {
         stringResult = ""
         calculatorModel.clear()
+    }
+    
+    private func formatString(_ unformattedString: String) -> String? {
+        let numberFormatter: NumberFormatter = .init()
+        numberFormatter.maximumFractionDigits = 4
+        numberFormatter.locale = .current
+        numberFormatter.decimalSeparator = "."
+        guard let formattedString = numberFormatter.string(from: NSDecimalNumber(string: unformattedString)) else {
+            return nil
+        }
+        return formattedString
     }
 }
 

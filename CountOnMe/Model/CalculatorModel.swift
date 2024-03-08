@@ -9,10 +9,15 @@
 import Foundation
 
 struct CalculatorModel {
+
+    // MARK: - Stored properties
+
     private var resultString: [Substring] = []
 
+    // MARK: - Methods
+
     mutating func getResult(rawString: String) -> String {
-        applyPrioritiesRules(rawString: rawString)
+        applyPriorityRules(rawString: rawString)
         calculateFinalResult()
         return stringFromSubstring(resultString)
     }
@@ -31,7 +36,7 @@ struct CalculatorModel {
         resultString.removeAll { $0.isAnEqualizer }
     }
     
-    private mutating func applyPrioritiesRules(rawString: String){
+    private mutating func applyPriorityRules(rawString: String) {
         resultString = separateString(rawString: rawString)
         reduceString(
             condition1: { $0.isAMultiplication },
@@ -41,12 +46,16 @@ struct CalculatorModel {
         )
     }
 
+    func separateString(rawString: String) -> [Substring] {
+        return rawString.split { $0 == " " }
+    }
+
     private mutating func reduceString(
         condition1: (Substring) -> Bool,
         operation1: (Substring, Substring) -> Substring,
         condition2: (Substring) -> Bool,
         operation2: (Substring, Substring) -> Substring
-    ){
+    ) {
         guard var lastIndex = resultString.lastIndex(where: { $0.isAnEqualizer }) else { return }
         var index = 0
         while index != lastIndex {
@@ -75,56 +84,5 @@ struct CalculatorModel {
             result += string
         }
         return result
-    }
-    
-    func add(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
-        let mathResult = (Float(leftOperand) ?? 0.0) + (Float(rightOperand) ?? 0.0)
-        return Substring(String(mathResult))
-    }
-    
-    func substract(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
-        let mathResult = (Float(leftOperand) ?? 0.0) - (Float(rightOperand) ?? 0.0)
-        return Substring(String(mathResult))
-    }
-
-    func multiply(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
-        let mathResult = (Float(leftOperand) ?? 0.0) * (Float(rightOperand) ?? 0.0)
-        return Substring(String(mathResult))
-    }
-
-    func divide(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
-        let mathResult = (Float(leftOperand) ?? 0.0) / (Float(rightOperand) ?? 0.0)
-        return Substring(String(mathResult))
-    }
-
-    func separateString(rawString: String) -> [Substring] {
-        return rawString.split { $0 == " " }
-    }
-}
-
-private extension Substring {
-
-    var isAnOperator: Bool {
-        isAnAddition || isASubstraction || isAMultiplication || isADivision || isAnEqualizer
-    }
-
-    var isAnAddition: Bool {
-        (self == "+")
-    }
-
-    var isASubstraction: Bool {
-        (self == "-")
-    }
-
-    var isAMultiplication: Bool {
-        (self == "x")
-    }
-
-    var isADivision: Bool {
-        (self == "/")
-    }
-    
-    var isAnEqualizer: Bool {
-        (self == "=")
     }
 }
