@@ -31,6 +31,14 @@ final class CalculatorManagerTests: XCTestCase {
         XCTAssertEqual(actualResult, expectedResult)
     }
 
+    func testRemovePrioritiesFromString() throws {
+        let rawString: String = "2 - 1 + 6 x 10 - 4 / 2 = "
+        calculatorModel.testApplyPriorityRules(rawString: rawString)
+        let expectedResult: [Substring] = ["2", "-", "1", "+", "60.0", "-", "2.0", "="]
+
+        XCTAssertEqual(calculatorModel.getStringResult(), expectedResult)
+    }
+
     func testAddStringOperands() {
         let leftOperand: Substring = .init("12")
         let rightOperand: Substring = .init("2")

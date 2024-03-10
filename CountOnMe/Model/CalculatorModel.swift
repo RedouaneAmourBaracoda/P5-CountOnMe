@@ -72,8 +72,17 @@ struct CalculatorModel {
     }
 }
 
+// Test private methods.
 extension CalculatorModel {
     func testSeparateStrings(rawString: String) -> [Substring] {
         self.separateString(rawString: rawString)
+    }
+
+    mutating func testApplyPriorityRules(rawString: String) {
+        self.applyPriorityRules(rawString: rawString)
+    }
+
+    func getStringResult() -> [Substring] {
+        self.resultString
     }
 }
