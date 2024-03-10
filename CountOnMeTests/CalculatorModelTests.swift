@@ -83,7 +83,7 @@ final class CalculatorManagerTests: XCTestCase {
         guard let formattedResult = numberFormatter.string(from: NSDecimalNumber(string: unformattedResult)) else {
             return
         }
-        
+
         XCTAssertEqual(formattedResult, expectedResult)
     }
 
@@ -92,7 +92,7 @@ final class CalculatorManagerTests: XCTestCase {
         let expectedResult: String = "0.3333"
 
         let unformattedResult = calculatorModel.getResult(rawString: rawString)
-        
+
         XCTAssertNotEqual(unformattedResult, expectedResult)
     }
 }

@@ -9,7 +9,7 @@
 import Foundation
 
 extension CalculatorModel {
-    
+
     enum MathOperator {
         case add
         case substract
@@ -85,7 +85,7 @@ extension Substring {
     var isADivision: Bool {
         (self == "/")
     }
-    
+
     var isAnEqualizer: Bool {
         (self == "=")
     }

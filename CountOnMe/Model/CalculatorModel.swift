@@ -9,13 +9,13 @@
 import Foundation
 
 struct CalculatorModel {
-    
+
     // MARK: - Stored properties
-    
+
     private var resultString: [Substring] = []
-    
+
     // MARK: - Methods
-    
+
     mutating func getResult(rawString: String) -> String {
         applyPriorityRules(rawString: rawString)
         addAndSubstractOperands()
@@ -71,7 +71,6 @@ struct CalculatorModel {
         resultString.removeAll()
     }
 }
-
 
 extension CalculatorModel {
     func testSeparateStrings(rawString: String) -> [Substring] {

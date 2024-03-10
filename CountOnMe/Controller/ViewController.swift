@@ -41,4 +41,3 @@ final class ViewController: UIViewController {
         calculatorManager.insert(operation: operation)
     }
 }
-

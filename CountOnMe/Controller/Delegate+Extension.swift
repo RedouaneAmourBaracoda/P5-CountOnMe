@@ -20,7 +20,7 @@ extension ViewController: CalculatorManagerDelegate {
         alert.addAction(action)
         present(alert, animated: true)
     }
-    
+
     func display(_ result: String) {
         resultTextView.text = result
     }
