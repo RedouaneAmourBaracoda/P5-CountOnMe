@@ -53,7 +53,7 @@ struct CalculatorManager {
         stringResult = ""
         calculatorModel.clear()
     }
-    
+
     private func formatString(_ unformattedString: String) -> String? {
         let numberFormatter: NumberFormatter = .init()
         numberFormatter.maximumFractionDigits = 4
@@ -69,7 +69,7 @@ struct CalculatorManager {
 enum CalculationError: Error {
     case unvalidOperator
     case divideByZero
-    
+
     var message: String {
         switch self {
         case .unvalidOperator:

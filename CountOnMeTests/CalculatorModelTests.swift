@@ -9,6 +9,8 @@
 @testable import CountOnMe
 import XCTest
 
+typealias Operations =  CalculatorModel.MathOperator
+
 final class CalculatorManagerTests: XCTestCase {
     var calculatorModel: CalculatorModel!
     let numberFormatter: NumberFormatter = .init()
@@ -23,46 +25,46 @@ final class CalculatorManagerTests: XCTestCase {
 
     func testStringSeparator() throws {
         let rawString: String = "2 - 1 + 6 x 10 - 4 / 2 = "
-        let splitResult = calculatorModel.separateString(rawString: rawString)
+        let actualResult = calculatorModel.testSeparateStrings(rawString: rawString)
         let expectedResult: [Substring] = ["2", "-", "1", "+", "6", "x", "10", "-", "4", "/", "2", "="]
 
-        XCTAssertEqual(splitResult, expectedResult)
+        XCTAssertEqual(actualResult, expectedResult)
     }
 
     func testAddStringOperands() {
         let leftOperand: Substring = .init("12")
         let rightOperand: Substring = .init("2")
-        let mathResult = calculatorModel.add(leftOperand, rightOperand)
+        let actualResult = Operations.add(leftOperand, rightOperand)
         let expectedResult: Substring = .init("14.0")
 
-        XCTAssertEqual(mathResult, expectedResult)
+        XCTAssertEqual(actualResult, expectedResult)
     }
 
     func testSubtractStringOperands() {
         let leftOperand: Substring = .init("12")
         let rightOperand: Substring = .init("2")
-        let mathResult = calculatorModel.substract(leftOperand, rightOperand)
+        let actualResult = Operations.substract(leftOperand, rightOperand)
         let expectedResult: Substring = .init("10.0")
 
-        XCTAssertEqual(mathResult, expectedResult)
+        XCTAssertEqual(actualResult, expectedResult)
     }
 
     func testMultiplyStringOperands() {
         let leftOperand: Substring = .init("12")
         let rightOperand: Substring = .init("2")
-        let mathResult = calculatorModel.multiply(leftOperand, rightOperand)
+        let actualResult = Operations.multiply(leftOperand, rightOperand)
         let expectedResult: Substring = .init("24.0")
 
-        XCTAssertEqual(mathResult, expectedResult)
+        XCTAssertEqual(actualResult, expectedResult)
     }
 
     func testDivideStringOperands() {
         let leftOperand: Substring = .init("12")
         let rightOperand: Substring = .init("2")
-        let mathResult = calculatorModel.divide(leftOperand, rightOperand)
+        let actualResult = Operations.divide(leftOperand, rightOperand)
         let expectedResult: Substring = .init("6.0")
 
-        XCTAssertEqual(mathResult, expectedResult)
+        XCTAssertEqual(actualResult, expectedResult)
     }
 
     func testGetResultFromCalculator() {
@@ -73,7 +75,7 @@ final class CalculatorManagerTests: XCTestCase {
         XCTAssertEqual(actualResult, expectedResult)
     }
 
-    func testGetResultFromCalculatorWithDecimalNumber() {
+    func testGetResultFromCalculatorWithFormattedDecimalNumber() {
         let rawString: String = "4 / 3 - 1 = "
         let expectedResult: String = "0.3333"
 
@@ -83,5 +85,14 @@ final class CalculatorManagerTests: XCTestCase {
         }
         
         XCTAssertEqual(formattedResult, expectedResult)
+    }
+
+    func testGetResultFromCalculatorWithNonFormattedDecimalNumber() {
+        let rawString: String = "4 / 3 - 1 = "
+        let expectedResult: String = "0.3333"
+
+        let unformattedResult = calculatorModel.getResult(rawString: rawString)
+        
+        XCTAssertNotEqual(unformattedResult, expectedResult)
     }
 }

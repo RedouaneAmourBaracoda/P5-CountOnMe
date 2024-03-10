@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 
-
 // MARK: - Extension CalculatorManagerDelegate
 
 extension ViewController: CalculatorManagerDelegate {

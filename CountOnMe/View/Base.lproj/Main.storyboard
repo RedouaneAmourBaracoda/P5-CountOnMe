@@ -267,7 +267,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" tag="-4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qMj-Of-bCU">
-                                                <rect key="frame" x="288" y="0.0" width="86" height="75.333333333333329"/>
+                                                <rect key="frame" x="288" y="0.0" width="86" height="75.333333333333314"/>
                                                 <color key="backgroundColor" red="0.76007986068725586" green="0.78088480234146118" blue="0.24112558364868164" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                                 <state key="normal" title="/">

@@ -9,61 +9,42 @@
 import Foundation
 
 struct CalculatorModel {
-
+    
     // MARK: - Stored properties
-
+    
     private var resultString: [Substring] = []
-
+    
     // MARK: - Methods
-
+    
     mutating func getResult(rawString: String) -> String {
         applyPriorityRules(rawString: rawString)
-        calculateFinalResult()
+        addAndSubstractOperands()
         return stringFromSubstring(resultString)
     }
-    
-    mutating func clear() {
-        resultString.removeAll()
-    }
-    
-    private mutating func calculateFinalResult() {
-        reduceString(
-            condition1: { $0.isAnAddition },
-            operation1: add(_:_:),
-            condition2: { $0.isASubstraction },
-            operation2: substract(_:_:)
-        )
-        resultString.removeAll { $0.isAnEqualizer }
-    }
-    
+
     private mutating func applyPriorityRules(rawString: String) {
         resultString = separateString(rawString: rawString)
-        reduceString(
-            condition1: { $0.isAMultiplication },
-            operation1: multiply(_:_:),
-            condition2: { $0.isADivision },
-            operation2: divide(_:_:)
-        )
+        detectOperators(.multiply, .divide)
     }
 
-    func separateString(rawString: String) -> [Substring] {
+    private mutating func addAndSubstractOperands() {
+        detectOperators(.add, .substract)
+        resultString.removeAll { $0.isAnEqualizer }
+    }
+
+    private func separateString(rawString: String) -> [Substring] {
         return rawString.split { $0 == " " }
     }
 
-    private mutating func reduceString(
-        condition1: (Substring) -> Bool,
-        operation1: (Substring, Substring) -> Substring,
-        condition2: (Substring) -> Bool,
-        operation2: (Substring, Substring) -> Substring
-    ) {
+    private mutating func detectOperators(_ mathOperator1: MathOperator, _ mathOperator2: MathOperator) {
         guard var lastIndex = resultString.lastIndex(where: { $0.isAnEqualizer }) else { return }
         var index = 0
         while index != lastIndex {
-            if condition1(resultString[index]) {
-                appendOperation(index: index, operation: operation1)
+            if mathOperator1.isDetectedIn(resultString[index]) {
+                calculateAndReplace(index: index, operation: mathOperator1.operation)
                 lastIndex -= 2
-            } else if condition2(resultString[index]) {
-                appendOperation(index: index, operation: operation2)
+            } else if mathOperator2.isDetectedIn(resultString[index]) {
+                calculateAndReplace(index: index, operation: mathOperator2.operation)
                 lastIndex -= 2
             } else {
                 index += 1
@@ -71,7 +52,7 @@ struct CalculatorModel {
         }
     }
 
-    private mutating func appendOperation(index: Int, operation: (Substring, Substring) -> Substring) {
+    private mutating func calculateAndReplace(index: Int, operation: (Substring, Substring) -> Substring) {
         let result = operation(resultString[index - 1], resultString[index + 1])
         resultString[index - 1] = result
         resultString.remove(at: index + 1)
@@ -84,5 +65,16 @@ struct CalculatorModel {
             result += string
         }
         return result
+    }
+
+    mutating func clear() {
+        resultString.removeAll()
+    }
+}
+
+
+extension CalculatorModel {
+    func testSeparateStrings(rawString: String) -> [Substring] {
+        self.separateString(rawString: rawString)
     }
 }

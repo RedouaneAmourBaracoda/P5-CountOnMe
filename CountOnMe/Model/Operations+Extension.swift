@@ -8,29 +8,59 @@
 
 import Foundation
 
-// Operations
 extension CalculatorModel {
     
-    func add(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
-        let mathResult = (Float(leftOperand) ?? 0.0) + (Float(rightOperand) ?? 0.0)
-        return Substring(String(mathResult))
-    }
+    enum MathOperator {
+        case add
+        case substract
+        case multiply
+        case divide
 
-    func substract(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
-        let mathResult = (Float(leftOperand) ?? 0.0) - (Float(rightOperand) ?? 0.0)
-        print("Soustraction: \(leftOperand) - \(rightOperand) = \(mathResult)")
-        return Substring(String(mathResult))
-    }
+        var isDetectedIn: (Substring) -> Bool {
+            switch self {
+            case .add:
+                return { $0.isAnAddition }
+            case .substract:
+                return { $0.isASubstraction }
+            case .multiply:
+                return { $0.isAMultiplication }
+            case .divide:
+                return { $0.isADivision }
+            }
+        }
 
-    func multiply(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
-        let mathResult = (Float(leftOperand) ?? 0.0) * (Float(rightOperand) ?? 0.0)
-        return Substring(String(mathResult))
-    }
+        var operation: (Substring, Substring) -> Substring {
+            switch self {
+            case .add:
+                return Self.add(_:_:)
+            case .substract:
+                return Self.substract(_:_:)
+            case .multiply:
+                return Self.multiply(_:_:)
+            case .divide:
+                return Self.divide(_:_:)
+            }
+        }
 
-    func divide(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
-        let mathResult = (Float(leftOperand) ?? 0.0) / (Float(rightOperand) ?? 0.0)
-        print("Division: \(leftOperand) / \(rightOperand) = \(mathResult)")
-        return Substring(String(mathResult))
+        static func add(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
+            let mathResult = (Float(leftOperand) ?? 0.0) + (Float(rightOperand) ?? 0.0)
+            return Substring(String(mathResult))
+        }
+
+        static func substract(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
+            let mathResult = (Float(leftOperand) ?? 0.0) - (Float(rightOperand) ?? 0.0)
+            return Substring(String(mathResult))
+        }
+
+        static func multiply(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
+            let mathResult = (Float(leftOperand) ?? 0.0) * (Float(rightOperand) ?? 0.0)
+            return Substring(String(mathResult))
+        }
+
+        static func divide(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
+            let mathResult = (Float(leftOperand) ?? 0.0) / (Float(rightOperand) ?? 0.0)
+            return Substring(String(mathResult))
+        }
     }
 }
 
