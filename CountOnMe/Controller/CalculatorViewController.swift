@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class ViewController: UIViewController {
+final class CalculatorViewController: UIViewController {
 
     // MARK: - @IBOutlets
 
@@ -16,7 +16,7 @@ final class ViewController: UIViewController {
 
     // MARK: - Stored properties
 
-    private var calculatorManager: CalculatorManager = .init()
+    private var calculatorManager = CalculatorManager()
 
     // MARK: - View Life cycles
 
@@ -39,5 +39,22 @@ final class ViewController: UIViewController {
     @IBAction func operatorButtonTapped(_ sender: UIButton) {
         guard let operation = sender.titleLabel?.text else { return }
         calculatorManager.insert(operation: operation)
+    }
+}
+
+// MARK: - Extension CalculatorManagerDelegate
+
+extension CalculatorViewController: CalculatorManagerDelegate {
+    func showError(_ error: CalculationError) {
+        let alert = UIAlertController(title: "Invalid operation", message: error.message, preferredStyle: .alert)
+        let action = UIAlertAction(title: "ok", style: .default) { _ in
+            self.dismiss(animated: true)
+        }
+        alert.addAction(action)
+        present(alert, animated: true)
+    }
+
+    func display(_ result: String) {
+        resultTextView.text = result
     }
 }

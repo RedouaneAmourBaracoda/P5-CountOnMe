@@ -8,10 +8,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Calculator View Controller-->
         <scene sceneID="BSq-PH-znu">
             <objects>
-                <viewController id="eqK-jh-KKu" customClass="ViewController" customModule="CountOnMe" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="eqK-jh-KKu" customClass="CalculatorViewController" customModule="CountOnMe" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="eIh-hr-C95">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -267,7 +267,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" tag="-4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qMj-Of-bCU">
-                                                <rect key="frame" x="288" y="0.0" width="86" height="75.333333333333314"/>
+                                                <rect key="frame" x="288" y="0.0" width="86" height="75.333333333333329"/>
                                                 <color key="backgroundColor" red="0.76007986068725586" green="0.78088480234146118" blue="0.24112558364868164" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                                 <state key="normal" title="/">

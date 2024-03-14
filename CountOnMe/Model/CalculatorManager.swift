@@ -19,7 +19,7 @@ struct CalculatorManager {
 
     weak var delegate: CalculatorManagerDelegate?
 
-    private var calculatorModel: CalculatorModel = .init()
+    private var calculatorModel = CalculatorModel()
 
     private var stringResult: String = "" {
         didSet {
@@ -38,7 +38,7 @@ struct CalculatorManager {
 
     mutating func insert(operation: String) {
         guard stringResult != "" && stringResult.last != " " else {
-            delegate?.showError(CalculationError.unvalidOperator)
+            delegate?.showError(CalculationError.invalidOperator)
             return
         }
         stringResult += " " + operation + " "
@@ -55,11 +55,8 @@ struct CalculatorManager {
     }
 
     private func formatString(_ unformattedString: String) -> String? {
-        let numberFormatter: NumberFormatter = .init()
-        numberFormatter.maximumFractionDigits = 4
-        numberFormatter.locale = .current
-        numberFormatter.decimalSeparator = "."
-        guard let formattedString = numberFormatter.string(from: NSDecimalNumber(string: unformattedString)) else {
+        let formatter = NumberFormatter.shared
+        guard let formattedString = formatter.string(from: NSDecimalNumber(string: unformattedString)) else {
             return nil
         }
         return formattedString
@@ -67,15 +64,25 @@ struct CalculatorManager {
 }
 
 enum CalculationError: Error {
-    case unvalidOperator
+    case invalidOperator
     case divideByZero
 
     var message: String {
         switch self {
-        case .unvalidOperator:
+        case .invalidOperator:
             "unvalid operator"
         case .divideByZero:
             "division by 0"
         }
     }
+}
+
+extension NumberFormatter {
+    static let shared: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.maximumFractionDigits = 4
+        formatter.locale = .current
+        formatter.decimalSeparator = "."
+        return formatter
+    }()
 }

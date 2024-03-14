@@ -60,7 +60,7 @@ struct CalculatorModel {
     }
 
     private func stringFromSubstring(_ substring: [Substring]) -> String {
-        var result: String = ""
+        var result = ""
         for string in substring {
             result += string
         }
