@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import OSLog
 
 protocol CalculatorManagerDelegate: AnyObject {
     func display(_ result: String)
@@ -30,9 +31,8 @@ struct CalculatorManager {
     // MARK: - Methods
 
     mutating func insert(digit: String) {
-        guard !(digit == "0" && stringResult.hasSuffix("/ ")) else { delegate?.showError(.divideByZero)
-            // Afficher une erreur
-
+        guard !(digit == "0" && stringResult.hasSuffix("/ ")) else {
+            delegate?.showError(.divideByZero)
             return
         }
         stringResult += digit
@@ -59,6 +59,9 @@ struct CalculatorManager {
     private func formatString(_ unformattedString: String) -> String? {
         let formatter = NumberFormatter.shared
         guard let formattedString = formatter.string(from: NSDecimalNumber(string: unformattedString)) else {
+            if #available(iOS 14.0, *) {
+                Logger().debug("Formatting failed.")
+            }
             return nil
         }
         return formattedString
