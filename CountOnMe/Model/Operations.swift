@@ -13,7 +13,7 @@ enum MathOperator {
     case substract
     case multiply
     case divide
-    
+
     var operation: (Substring, Substring) -> Substring {
         switch self {
         case .add:
@@ -39,51 +39,50 @@ enum MathOperator {
             return { $0.isADivision }
         }
     }
-    
+
     static func add(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
         let mathResult = (Float(leftOperand) ?? 0.0) + (Float(rightOperand) ?? 0.0)
         return Substring(String(mathResult))
     }
-    
+
     static func substract(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
         let mathResult = (Float(leftOperand) ?? 0.0) - (Float(rightOperand) ?? 0.0)
         return Substring(String(mathResult))
     }
-    
+
     static func multiply(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
         let mathResult = (Float(leftOperand) ?? 0.0) * (Float(rightOperand) ?? 0.0)
         return Substring(String(mathResult))
     }
-    
+
     static func divide(_ leftOperand: Substring, _ rightOperand: Substring) -> Substring {
         let mathResult = (Float(leftOperand) ?? 0.0) / (Float(rightOperand) ?? 0.0)
         return Substring(String(mathResult))
     }
 }
 
-
 extension Substring {
-    
+
     var isAnOperator: Bool {
         isAnAddition || isASubstraction || isAMultiplication || isADivision || isAnEqualizer
     }
-    
+
     var isAnAddition: Bool {
         (self == "+")
     }
-    
+
     var isASubstraction: Bool {
         (self == "-")
     }
-    
+
     var isAMultiplication: Bool {
         (self == "x")
     }
-    
+
     var isADivision: Bool {
         (self == "/")
     }
-    
+
     var isAnEqualizer: Bool {
         (self == "=")
     }

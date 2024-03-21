@@ -16,6 +16,8 @@
 		B86C73B2233E1762005E9ED8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B86C73B1233E1762005E9ED8 /* Assets.xcassets */; };
 		B8C9D3582B9A2FAC008AE874 /* CalculatorModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C9D3572B9A2FAC008AE874 /* CalculatorModelTests.swift */; };
 		B8C9D35A2B9A92C9008AE874 /* Operations.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C9D3592B9A92C9008AE874 /* Operations.swift */; };
+		B8D908112BA3556800F8F3D0 /* NumberFormatter+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8D908102BA3556800F8F3D0 /* NumberFormatter+Extension.swift */; };
+		B8D908132BA35CF700F8F3D0 /* OperationsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8D908122BA35CF700F8F3D0 /* OperationsTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +44,8 @@
 		B87A519623325B1B00C02AB6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B8C9D3572B9A2FAC008AE874 /* CalculatorModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorModelTests.swift; sourceTree = "<group>"; };
 		B8C9D3592B9A92C9008AE874 /* Operations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operations.swift; sourceTree = "<group>"; };
+		B8D908102BA3556800F8F3D0 /* NumberFormatter+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NumberFormatter+Extension.swift"; sourceTree = "<group>"; };
+		B8D908122BA35CF700F8F3D0 /* OperationsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationsTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +100,7 @@
 			isa = PBXGroup;
 			children = (
 				B80656492A7D50EE0037FDC2 /* CalculatorManager.swift */,
+				B8D908102BA3556800F8F3D0 /* NumberFormatter+Extension.swift */,
 				B81BB9F62B98B5A300331DB9 /* CalculatorModel.swift */,
 				B8C9D3592B9A92C9008AE874 /* Operations.swift */,
 			);
@@ -107,6 +112,7 @@
 			children = (
 				B87A519623325B1B00C02AB6 /* Info.plist */,
 				B8C9D3572B9A2FAC008AE874 /* CalculatorModelTests.swift */,
+				B8D908122BA35CF700F8F3D0 /* OperationsTests.swift */,
 			);
 			path = CountOnMeTests;
 			sourceTree = "<group>";
@@ -144,10 +150,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1FA43BF7224E569A00F565CB /* Build configuration list for PBXNativeTarget "CountOnMe" */;
 			buildPhases = (
+				B8D5E1492B9E339800680F8B /* SwiftLint */,
 				1FA43BCB224E569900F565CB /* Sources */,
 				1FA43BCC224E569900F565CB /* Frameworks */,
 				1FA43BCD224E569900F565CB /* Resources */,
-				B8D5E1492B9E339800680F8B /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -236,7 +242,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		B8D5E1492B9E339800680F8B /* ShellScript */ = {
+		B8D5E1492B9E339800680F8B /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -245,6 +251,7 @@
 			);
 			inputPaths = (
 			);
+			name = SwiftLint;
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -252,6 +259,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -265,6 +273,7 @@
 				B81BB9F72B98B5A300331DB9 /* CalculatorModel.swift in Sources */,
 				1FA43BD5224E569900F565CB /* CalculatorViewController.swift in Sources */,
 				1FA43BD3224E569900F565CB /* AppDelegate.swift in Sources */,
+				B8D908112BA3556800F8F3D0 /* NumberFormatter+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -273,6 +282,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B8C9D3582B9A2FAC008AE874 /* CalculatorModelTests.swift in Sources */,
+				B8D908132BA35CF700F8F3D0 /* OperationsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

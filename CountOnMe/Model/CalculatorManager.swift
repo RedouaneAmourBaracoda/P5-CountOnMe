@@ -30,7 +30,9 @@ struct CalculatorManager {
     // MARK: - Methods
 
     mutating func insert(digit: String) {
-        guard !(digit == "0" && stringResult.hasSuffix("/ ")) else { delegate?.showError(CalculationError.divideByZero)
+        guard !(digit == "0" && stringResult.hasSuffix("/ ")) else { delegate?.showError(.divideByZero)
+            // Afficher une erreur
+
             return
         }
         stringResult += digit
@@ -38,7 +40,7 @@ struct CalculatorManager {
 
     mutating func insert(operation: String) {
         guard stringResult != "" && stringResult.last != " " else {
-            delegate?.showError(CalculationError.invalidOperator)
+            delegate?.showError(.invalidOperator)
             return
         }
         stringResult += " " + operation + " "
@@ -70,19 +72,9 @@ enum CalculationError: Error {
     var message: String {
         switch self {
         case .invalidOperator:
-            "unvalid operator"
+            "invalid operator"
         case .divideByZero:
             "division by 0"
         }
     }
-}
-
-extension NumberFormatter {
-    static let shared: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.maximumFractionDigits = 4
-        formatter.locale = .current
-        formatter.decimalSeparator = "."
-        return formatter
-    }()
 }

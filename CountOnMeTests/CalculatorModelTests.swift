@@ -33,42 +33,6 @@ final class CalculatorManagerTests: XCTestCase {
         XCTAssertEqual(calculatorModel.getStringResult(), expectedResult)
     }
 
-    func testAddStringOperands() {
-        let leftOperand = Substring("12")
-        let rightOperand = Substring("2")
-        let actualResult = MathOperator.add(leftOperand, rightOperand)
-        let expectedResult = Substring("14.0")
-
-        XCTAssertEqual(actualResult, expectedResult)
-    }
-
-    func testSubtractStringOperands() {
-        let leftOperand = Substring("12")
-        let rightOperand = Substring("2")
-        let actualResult = MathOperator.substract(leftOperand, rightOperand)
-        let expectedResult = Substring("10.0")
-
-        XCTAssertEqual(actualResult, expectedResult)
-    }
-
-    func testMultiplyStringOperands() {
-        let leftOperand = Substring("12")
-        let rightOperand = Substring("2")
-        let actualResult = MathOperator.multiply(leftOperand, rightOperand)
-        let expectedResult = Substring("24.0")
-
-        XCTAssertEqual(actualResult, expectedResult)
-    }
-
-    func testDivideStringOperands() {
-        let leftOperand = Substring("12")
-        let rightOperand = Substring("2")
-        let actualResult = MathOperator.divide(leftOperand, rightOperand)
-        let expectedResult = Substring("6.0")
-
-        XCTAssertEqual(actualResult, expectedResult)
-    }
-
     func testGetResultFromCalculator() {
         let rawString = "2 x 3 + 1 - 10 / 5 = "
         let expectedResult = "5.0"
@@ -82,7 +46,8 @@ final class CalculatorManagerTests: XCTestCase {
         let expectedResult = "0.3333"
 
         let unformattedResult = calculatorModel.getResult(rawString: rawString)
-        guard let formattedResult = NumberFormatter.shared.string(from: NSDecimalNumber(string: unformattedResult)) else {
+        let formatter = NumberFormatter.shared
+        guard let formattedResult = formatter.string(from: NSDecimalNumber(string: unformattedResult)) else {
             XCTFail("Formatting has failed.")
             return
         }
