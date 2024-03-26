@@ -8,8 +8,7 @@
 
 import UIKit
 
-
-final class ViewController: UIViewController {
+final class CalculatorViewController: UIViewController {
 
     // MARK: - @IBOutlets
 
@@ -17,47 +16,45 @@ final class ViewController: UIViewController {
 
     // MARK: - Stored properties
 
-    private var calculatorManager: CalculatorManager?
+    private var calculatorManager = CalculatorManager()
 
     // MARK: - View Life cycles
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.calculatorManager = CalculatorManager()
-        calculatorManager?.delegate = self
+        calculatorManager.delegate = self
     }
 
     // MARK: - @IBActions
 
     @IBAction func digitButtonTapped(_ sender: UIButton) {
         guard let digit = sender.titleLabel?.text else { return }
-        calculatorManager?.insert(digit: digit)
+        calculatorManager.insert(digit: digit)
     }
 
     @IBAction func clearButtonTapped(_ sender: UIButton) {
-        calculatorManager?.clear()
+        calculatorManager.clear()
     }
 
     @IBAction func operatorButtonTapped(_ sender: UIButton) {
         guard let operation = sender.titleLabel?.text else { return }
-        calculatorManager?.insert(operation: operation)
+        calculatorManager.insert(operation: operation)
     }
 }
 
 // MARK: - Extension CalculatorManagerDelegate
 
-extension ViewController: CalculatorManagerDelegate {
+extension CalculatorViewController: CalculatorManagerDelegate {
     func showError(_ error: CalculationError) {
-        let alert: UIAlertController = .init(title: "Unvalid operation", message: error.message, preferredStyle: .alert)
-        let action: UIAlertAction = .init(title: "ok", style: .default) { _ in
+        let alert = UIAlertController(title: "Invalid operation", message: error.message, preferredStyle: .alert)
+        let action = UIAlertAction(title: "ok", style: .default) { _ in
             self.dismiss(animated: true)
         }
         alert.addAction(action)
-        self.present(alert, animated: true)
+        present(alert, animated: true)
     }
-    
+
     func display(_ result: String) {
-        self.resultTextView.text = result
+        resultTextView.text = result
     }
 }
-

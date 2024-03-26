@@ -9,105 +9,80 @@
 import Foundation
 
 struct CalculatorModel {
-    private var leftOperand: String = ""
-    private var rightOperand: String = ""
-    private var currentOperator: MathOperation?
-    private var prioritizerService: PrioritizerService = .init()
+
+    // MARK: - Stored properties
+
+    private var resultString: [Substring] = []
+
+    // MARK: - Methods
 
     mutating func getResult(rawString: String) -> String {
-        var substring = rawString
-        substring.removeAll { $0 == " " }
+        applyPriorityRules(rawString: rawString)
+        addAndSubstractOperands()
+        return stringFromSubstring(resultString)
+    }
 
-        let prioritizedSubstring = prioritizerService.prioritizeString(rawString: substring)
+    private mutating func applyPriorityRules(rawString: String) {
+        resultString = separateString(rawString: rawString)
+        detectOperators(.multiply, .divide)
+    }
 
-        for character in prioritizedSubstring {
-            character.isAnOperator ? fillOperator(with: character) : fillOperands(with: character)
+    private mutating func addAndSubstractOperands() {
+        detectOperators(.add, .substract)
+        resultString.removeAll { $0.isAnEqualizer }
+    }
+
+    private func separateString(rawString: String) -> [Substring] {
+        return rawString.split { $0 == " " }
+    }
+
+    private mutating func detectOperators(_ mathOperator1: MathOperator, _ mathOperator2: MathOperator) {
+        guard var lastIndex = resultString.lastIndex(where: { $0.isAnEqualizer }) else { return }
+        var index = 0
+        while index != lastIndex {
+            if mathOperator1.isDetectedIn(resultString[index]) {
+                calculateAndReplace(index: index, operation: mathOperator1.operation)
+                lastIndex -= 2
+            } else if mathOperator2.isDetectedIn(resultString[index]) {
+                calculateAndReplace(index: index, operation: mathOperator2.operation)
+                lastIndex -= 2
+            } else {
+                index += 1
+            }
         }
-        let finalResult = leftOperand
-        clearOperandsAndOperators()
-        prioritizerService.clear()
-        return finalResult
+    }
+
+    private mutating func calculateAndReplace(index: Int, operation: (Substring, Substring) -> Substring) {
+        let result = operation(resultString[index - 1], resultString[index + 1])
+        resultString[index - 1] = result
+        resultString.remove(at: index + 1)
+        resultString.remove(at: index)
+    }
+
+    private func stringFromSubstring(_ substring: [Substring]) -> String {
+        var result = ""
+        for string in substring {
+            result += string
+        }
+        return result
     }
 
     mutating func clear() {
-        prioritizerService.clear()
-        clearOperandsAndOperators()
-    }
-
-    private mutating func fillOperator(with operation: String.Element) {
-        calculateFormerOperation()
-        fillNewOperator(with: operation)
-    }
-
-    private mutating func calculateFormerOperation(){
-        guard let currentOperator else { return }
-        switch currentOperator {
-        case .addition:
-            leftOperand = add(leftOperand: leftOperand, rightOperand: rightOperand)
-        case .substraction:
-            leftOperand = substract(leftOperand: leftOperand, rightOperand: rightOperand)
-        }
-        rightOperand.removeAll()
-    }
-
-    private mutating func fillNewOperator(with character: String.Element) {
-        if (character == "+") {
-            currentOperator = .addition
-        } else if (character == "-"){
-            currentOperator = .substraction
-        }
-    }
-
-    private mutating func clearOperandsAndOperators() {
-        leftOperand.removeAll()
-        currentOperator = nil
-    }
-
-    private mutating func fillOperands(with digit: String.Element){
-        if currentOperator == nil {
-            leftOperand.append(digit)
-        } else {
-            rightOperand.append(digit)
-        }
-    }
-
-    private func add(leftOperand: String, rightOperand: String) -> String {
-        String((Int(leftOperand) ?? 0) + (Int(rightOperand) ?? 0))
-    }
-
-    private func substract(leftOperand: String, rightOperand: String) -> String {
-        String((Int(leftOperand) ?? 0) - (Int(rightOperand) ?? 0))
+        resultString.removeAll()
     }
 }
 
-private enum MathOperation {
-    case addition
-    case substraction
-}
-
-
-extension String.Element {
-    var isAnOperator: Bool {
-        isAnAddition || isASubstraction || isAMultiplication || isADivision || isAnEqualizer
+// Test private methods.
+extension CalculatorModel {
+    func testSeparateStrings(rawString: String) -> [Substring] {
+        self.separateString(rawString: rawString)
     }
 
-    var isAnAddition: Bool {
-        (self == "+")
+    mutating func testApplyPriorityRules(rawString: String) {
+        self.applyPriorityRules(rawString: rawString)
     }
 
-    var isASubstraction: Bool {
-        (self == "-")
-    }
-
-    var isAMultiplication: Bool {
-        (self == "x")
-    }
-
-    var isADivision: Bool {
-        (self == "/")
-    }
-    
-    var isAnEqualizer: Bool {
-        (self == "=")
+    func getStringResult() -> [Substring] {
+        self.resultString
     }
 }

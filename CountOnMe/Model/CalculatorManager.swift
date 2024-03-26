@@ -7,8 +7,9 @@
 //
 
 import Foundation
+import OSLog
 
-protocol CalculatorManagerDelegate {
+protocol CalculatorManagerDelegate: AnyObject {
     func display(_ result: String)
     func showError(_ error: CalculationError)
 }
@@ -16,8 +17,11 @@ protocol CalculatorManagerDelegate {
 struct CalculatorManager {
 
     // MARK: - Stored properties
-    var delegate: CalculatorManagerDelegate?
-    private var calculatorModel: CalculatorModel = .init()
+
+    weak var delegate: CalculatorManagerDelegate?
+
+    private var calculatorModel = CalculatorModel()
+
     private var stringResult: String = "" {
         didSet {
             delegate?.display(stringResult)
@@ -25,8 +29,10 @@ struct CalculatorManager {
     }
 
     // MARK: - Methods
-    mutating func insert(digit: String){
-        guard !(digit == "0" && stringResult.hasSuffix("/ ")) else { delegate?.showError(CalculationError.divideByZero)
+
+    mutating func insert(digit: String) {
+        guard !(digit == "0" && stringResult.hasSuffix("/ ")) else {
+            delegate?.showError(.divideByZero)
             return
         }
         stringResult += digit
@@ -34,29 +40,42 @@ struct CalculatorManager {
 
     mutating func insert(operation: String) {
         guard stringResult != "" && stringResult.last != " " else {
-            delegate?.showError(CalculationError.unvalidOperator)
+            delegate?.showError(.invalidOperator)
             return
         }
         stringResult += " " + operation + " "
         if operation == "=" {
-            stringResult = calculatorModel.getResult(rawString: stringResult)
+            let unformattedString = calculatorModel.getResult(rawString: stringResult)
+            guard let formattedString = formatString(unformattedString) else { return }
+            stringResult = formattedString
         }
     }
-    
-    mutating func clear(){
+
+    mutating func clear() {
         stringResult = ""
         calculatorModel.clear()
+    }
+
+    private func formatString(_ unformattedString: String) -> String? {
+        let formatter = NumberFormatter.shared
+        guard let formattedString = formatter.string(from: NSDecimalNumber(string: unformattedString)) else {
+            if #available(iOS 14.0, *) {
+                Logger().debug("Formatting failed.")
+            }
+            return nil
+        }
+        return formattedString
     }
 }
 
 enum CalculationError: Error {
-    case unvalidOperator
+    case invalidOperator
     case divideByZero
-    
+
     var message: String {
         switch self {
-        case .unvalidOperator:
-            "unvalid operator"
+        case .invalidOperator:
+            "invalid operator"
         case .divideByZero:
             "division by 0"
         }
