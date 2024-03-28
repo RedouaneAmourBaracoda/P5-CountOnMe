@@ -22,17 +22,29 @@ struct CalculatorManager {
 
     private var calculatorModel = CalculatorModel()
 
-    private var stringResult: String = "" {
+    private var stringResult: String {
         didSet {
+            currentError = nil
             delegate?.display(stringResult)
         }
+    }
+
+    private var currentError: CalculationError? {
+        didSet {
+            guard let currentError else { return }
+            delegate?.showError(currentError)
+        }
+    }
+
+    init(stringResult: String = "") {
+        self.stringResult = stringResult
     }
 
     // MARK: - Methods
 
     mutating func insert(digit: String) {
         guard !(digit == "0" && stringResult.hasSuffix("/ ")) else {
-            delegate?.showError(.divideByZero)
+            currentError = .divideByZero
             return
         }
         stringResult += digit
@@ -40,31 +52,21 @@ struct CalculatorManager {
 
     mutating func insert(operation: String) {
         guard stringResult != "" && stringResult.last != " " else {
-            delegate?.showError(.invalidOperator)
+            currentError = .invalidOperator
             return
         }
+
         stringResult += " " + operation + " "
         if operation == "=" {
-            let unformattedString = calculatorModel.getResult(rawString: stringResult)
-            guard let formattedString = formatString(unformattedString) else { return }
-            stringResult = formattedString
+            stringResult = calculatorModel.getResult(rawString: stringResult)
+            print("string result : \(stringResult)")
         }
     }
 
     mutating func clear() {
         stringResult = ""
+        currentError = nil
         calculatorModel.clear()
-    }
-
-    private func formatString(_ unformattedString: String) -> String? {
-        let formatter = NumberFormatter.shared
-        guard let formattedString = formatter.string(from: NSDecimalNumber(string: unformattedString)) else {
-            if #available(iOS 14.0, *) {
-                Logger().debug("Formatting failed.")
-            }
-            return nil
-        }
-        return formattedString
     }
 }
 
@@ -79,5 +81,17 @@ enum CalculationError: Error {
         case .divideByZero:
             "division by 0"
         }
+    }
+}
+
+// Test private properties.
+extension CalculatorManager {
+
+    func getStringResult() -> String {
+        self.stringResult
+    }
+
+    func getCurrentError() -> CalculationError? {
+        self.currentError
     }
 }

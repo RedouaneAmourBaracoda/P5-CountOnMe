@@ -62,11 +62,6 @@ enum MathOperator {
 }
 
 extension Substring {
-
-    var isAnOperator: Bool {
-        isAnAddition || isASubstraction || isAMultiplication || isADivision || isAnEqualizer
-    }
-
     var isAnAddition: Bool {
         (self == "+")
     }
