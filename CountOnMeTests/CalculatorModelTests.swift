@@ -9,11 +9,10 @@
 @testable import CountOnMe
 import XCTest
 
-final class CalculatorManagerTests: XCTestCase {
+final class CalculatorModelTests: XCTestCase {
     var calculatorModel: CalculatorModel!
 
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
         self.calculatorModel = .init()
     }
 
@@ -28,39 +27,43 @@ final class CalculatorManagerTests: XCTestCase {
     func testRemovePrioritiesFromString() throws {
         let rawString = "2 - 1 + 6 x 10 - 4 / 2 = "
         calculatorModel.testApplyPriorityRules(rawString: rawString)
+        let actualResult = calculatorModel.getSubstringResult()
         let expectedResult: [Substring] = ["2", "-", "1", "+", "60.0", "-", "2.0", "="]
 
-        XCTAssertEqual(calculatorModel.getStringResult(), expectedResult)
+        let prioritiesAreStillLeft: Bool = actualResult.contains {
+            MathOperator.multiply.isDetectedIn($0) || MathOperator.divide.isDetectedIn($0)
+        }
+
+        XCTAssertFalse(prioritiesAreStillLeft)
+        XCTAssertEqual(actualResult, expectedResult)
     }
 
-    func testGetResultFromCalculator() {
+    func testGetResult() {
         let rawString = "2 x 3 + 1 - 10 / 5 = "
         let expectedResult = "5.0"
         let actualResult = calculatorModel.getResult(rawString: rawString)
 
+        let operatorsAreStillLeft: Bool = calculatorModel.getSubstringResult().contains {
+            MathOperator.multiply.isDetectedIn($0)
+            || MathOperator.divide.isDetectedIn($0)
+            || MathOperator.add.isDetectedIn($0)
+            || MathOperator.substract.isDetectedIn($0)
+        }
+
+        XCTAssertFalse(operatorsAreStillLeft)
         XCTAssertEqual(actualResult, expectedResult)
     }
 
-    func testGetResultFromCalculatorWithFormattedDecimalNumber() {
-        let rawString = "4 / 3 - 1 = "
-        let expectedResult = "0.3333"
+    func testClearModel() {
+        let rawString = "1 x 5 + 1 - 10 / 5 = "
+        var expectedSubstringResult: [Substring] = ["4.0"]
+        let expectedStringResult = "4.0"
 
-        let unformattedResult = calculatorModel.getResult(rawString: rawString)
-        let formatter = NumberFormatter.shared
-        guard let formattedResult = formatter.string(from: NSDecimalNumber(string: unformattedResult)) else {
-            XCTFail("Formatting has failed.")
-            return
-        }
+        XCTAssertEqual(calculatorModel.getResult(rawString: rawString), expectedStringResult)
+        XCTAssertEqual(calculatorModel.getSubstringResult(), expectedSubstringResult)
 
-        XCTAssertEqual(formattedResult, expectedResult)
-    }
-
-    func testGetResultFromCalculatorWithNonFormattedDecimalNumber() {
-        let rawString = "4 / 3 - 1 = "
-        let expectedResult = "0.3333"
-
-        let unformattedResult = calculatorModel.getResult(rawString: rawString)
-
-        XCTAssertNotEqual(unformattedResult, expectedResult)
+        calculatorModel.clear()
+        expectedSubstringResult = []
+        XCTAssertEqual(calculatorModel.getSubstringResult(), expectedSubstringResult)
     }
 }

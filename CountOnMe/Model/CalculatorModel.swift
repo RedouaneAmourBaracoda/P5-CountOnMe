@@ -12,24 +12,24 @@ struct CalculatorModel {
 
     // MARK: - Stored properties
 
-    private var resultString: [Substring] = []
+    private var substringResult: [Substring] = []
 
     // MARK: - Methods
 
     mutating func getResult(rawString: String) -> String {
         applyPriorityRules(rawString: rawString)
         addAndSubstractOperands()
-        return stringFromSubstring(resultString)
+        return stringFromSubstring(substringResult)
     }
 
     private mutating func applyPriorityRules(rawString: String) {
-        resultString = separateString(rawString: rawString)
+        substringResult = separateString(rawString: rawString)
         detectOperators(.multiply, .divide)
     }
 
     private mutating func addAndSubstractOperands() {
         detectOperators(.add, .substract)
-        resultString.removeAll { $0.isAnEqualizer }
+        substringResult.removeAll { $0.isAnEqualizer }
     }
 
     private func separateString(rawString: String) -> [Substring] {
@@ -37,13 +37,13 @@ struct CalculatorModel {
     }
 
     private mutating func detectOperators(_ mathOperator1: MathOperator, _ mathOperator2: MathOperator) {
-        guard var lastIndex = resultString.lastIndex(where: { $0.isAnEqualizer }) else { return }
+        guard var lastIndex = substringResult.lastIndex(where: { $0.isAnEqualizer }) else { return }
         var index = 0
         while index != lastIndex {
-            if mathOperator1.isDetectedIn(resultString[index]) {
+            if mathOperator1.isDetectedIn(substringResult[index]) {
                 calculateAndReplace(index: index, operation: mathOperator1.operation)
                 lastIndex -= 2
-            } else if mathOperator2.isDetectedIn(resultString[index]) {
+            } else if mathOperator2.isDetectedIn(substringResult[index]) {
                 calculateAndReplace(index: index, operation: mathOperator2.operation)
                 lastIndex -= 2
             } else {
@@ -53,10 +53,10 @@ struct CalculatorModel {
     }
 
     private mutating func calculateAndReplace(index: Int, operation: (Substring, Substring) -> Substring) {
-        let result = operation(resultString[index - 1], resultString[index + 1])
-        resultString[index - 1] = result
-        resultString.remove(at: index + 1)
-        resultString.remove(at: index)
+        let result = operation(substringResult[index - 1], substringResult[index + 1])
+        substringResult[index - 1] = result
+        substringResult.remove(at: index + 1)
+        substringResult.remove(at: index)
     }
 
     private func stringFromSubstring(_ substring: [Substring]) -> String {
@@ -68,7 +68,7 @@ struct CalculatorModel {
     }
 
     mutating func clear() {
-        resultString.removeAll()
+        substringResult.removeAll()
     }
 }
 
@@ -82,7 +82,7 @@ extension CalculatorModel {
         self.applyPriorityRules(rawString: rawString)
     }
 
-    func getStringResult() -> [Substring] {
-        self.resultString
+    func getSubstringResult() -> [Substring] {
+        self.substringResult
     }
 }
